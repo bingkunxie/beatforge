@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beatforge — Web Audio Step Sequencer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">◆</span>
+        <h1>BEATFORGE</h1>
+        <span class="tag">web audio drum machine</span>
+      </div>
+      <div class="transport">
+        <button id="play" class="btn btn-play" title="Play / Stop (Space)">
+          <span class="play-icon">▶</span>
+        </button>
+        <div class="tempo">
+          <label>BPM</label>
+          <input id="bpm" type="number" min="40" max="240" value="120" />
+        </div>
+        <div class="slider-group">
+          <label>SWING</label>
+          <input id="swing" type="range" min="0" max="60" value="0" />
+          <span id="swingVal" class="val">0%</span>
+        </div>
+        <div class="slider-group">
+          <label>MASTER</label>
+          <input id="master" type="range" min="0" max="100" value="80" />
+          <span id="masterVal" class="val">80</span>
+        </div>
+      </div>
+      <div class="patterns" id="patternBank"></div>
+    </header>
+
+    <main class="grid-wrap">
+      <div id="grid" class="grid"></div>
+    </main>
+
+    <footer class="toolbar">
+      <div class="group">
+        <label>STEPS</label>
+        <select id="steps">
+          <option value="8">8</option>
+          <option value="16" selected>16</option>
+          <option value="32">32</option>
+        </select>
+      </div>
+      <div class="group buttons">
+        <button id="clear" class="btn ghost">Clear</button>
+        <button id="random" class="btn ghost">Randomize</button>
+        <button id="save" class="btn ghost">Save</button>
+        <button id="load" class="btn ghost">Load</button>
+      </div>
+      <div class="group kit">
+        <label>KIT</label>
+        <div class="seg" id="kit">
+          <button data-kit="classic" class="active">Classic</button>
+          <button data-kit="tr808">808</button>
+          <button data-kit="lofi">Lo-fi</button>
+        </div>
+      </div>
+      <div class="credit">space to play · 1–4 to switch patterns · click cells to toggle</div>
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
