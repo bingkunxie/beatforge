@@ -387,6 +387,29 @@
     [0, 8].forEach(i => k.bass.steps[i] = true);
   }
 
+  // ---------- engine API (consumed by backend modules) ----------
+  function deepCopy(x) { return JSON.parse(JSON.stringify(x)); }
+
+  window.BF = window.BF || {};
+  window.BF.engine = {
+    getActiveBank() { return deepCopy(pat().tracks); },
+    getSettings() {
+      return { steps: state.steps, bpm: state.bpm, swing: state.swing, kit: state.kit };
+    },
+    setActiveBank(tracks) {
+      pat().tracks = deepCopy(tracks);
+      buildGrid();
+    },
+    setSettings(s) {
+      if (s.steps) { state.steps = +s.steps; $("#steps").value = state.steps; }
+      if (s.bpm)   { state.bpm = +s.bpm; $("#bpm").value = state.bpm; }
+      if (s.swing != null) { state.swing = +s.swing; $("#swing").value = state.swing; $("#swingVal").textContent = state.swing + "%"; }
+      if (s.kit)   setKit(s.kit);
+      buildGrid();
+    },
+    refresh() { buildBank(); buildGrid(); },
+  };
+
   // ---------- init ----------
   seedDemo();
   buildBank();
