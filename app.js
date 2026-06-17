@@ -387,10 +387,12 @@
     [0, 8].forEach(i => k.bass.steps[i] = true);
   }
 
-  // ---------- engine API (consumed by backend modules) ----------
+  // ---------- engine API (consumed by other scripts: auth/beats/ui) ----------
   function deepCopy(x) { return JSON.parse(JSON.stringify(x)); }
 
   window.BF = window.BF || {};
+  // Note: master volume is intentionally excluded from settings — it is a local
+  // playback preference, not part of a saved/shared pattern.
   window.BF.engine = {
     getActiveBank() { return deepCopy(pat().tracks); },
     getSettings() {
@@ -401,8 +403,8 @@
       buildGrid();
     },
     setSettings(s) {
-      if (s.steps) { state.steps = +s.steps; $("#steps").value = state.steps; }
-      if (s.bpm)   { state.bpm = +s.bpm; $("#bpm").value = state.bpm; }
+      if (s.steps != null) { state.steps = +s.steps; $("#steps").value = state.steps; }
+      if (s.bpm != null)   { state.bpm = +s.bpm; $("#bpm").value = state.bpm; }
       if (s.swing != null) { state.swing = +s.swing; $("#swing").value = state.swing; $("#swingVal").textContent = state.swing + "%"; }
       if (s.kit)   setKit(s.kit);
       buildGrid();
