@@ -270,7 +270,8 @@ select {
 .auth-modal { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; width:300px; display:flex; flex-direction:column; gap:10px; }
 .auth-modal input { background:var(--bg); border:1px solid var(--line); color:var(--txt); border-radius:8px; padding:9px; font-family:inherit; }
 .auth-modal .err { color:var(--accent); font-size:11px; min-height:14px; }
-.auth-modal .google { background:#fff; color:#222; border:none; border-radius:8px; padding:9px; cursor:pointer; font-family:inherit; font-weight:600; }
+.auth-modal .google { background:#fff; color:#222; border:none; border-radius:8px; padding:9px; cursor:pointer; font-family:inherit; font-weight:600; display:flex; align-items:center; justify-content:center; gap:8px; }
+.auth-modal .google svg { display:block; }
 
 .panel { position:fixed; top:0; right:0; height:100vh; width:380px; max-width:92vw;
   background:var(--panel); border-left:1px solid var(--line); box-shadow:-12px 0 40px #0008;
