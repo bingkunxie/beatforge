@@ -45,8 +45,9 @@ create trigger on_auth_user_created
 create or replace view beats_with_likes
   with (security_invoker = true)
 as
-  select b.*, coalesce(l.cnt, 0) as like_count
+  select b.*, coalesce(l.cnt, 0) as like_count, p.display_name as author
   from beats b
+  left join profiles p on p.id = b.user_id
   left join (select beat_id, count(*) cnt from likes group by beat_id) l
     on l.beat_id = b.id;
 

@@ -177,7 +177,7 @@
       const card = document.createElement("div");
       card.className = "beat-card";
       card.innerHTML = `<div class="t">${escapeHtml(b.title)}</div>
-        <div class="meta">♥ <span class="cnt">${Number(b.like_count) || 0}</span></div>
+        <div class="meta">by ${escapeHtml(b.author || "anon")} · ♥ <span class="cnt">${Number(b.like_count) || 0}</span></div>
         <div class="acts">
           <button class="btn" data-a="load">Load</button>
           <button class="btn ghost like ${isLiked ? "on" : ""}" data-a="like">♥ ${isLiked ? "Liked" : "Like"}</button>

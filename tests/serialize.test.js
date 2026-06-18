@@ -29,13 +29,9 @@ test("fromBeatData splits back into {tracks, settings}", () => {
   assert.deepStrictEqual(tracks.snare.steps, [false, false, true, false]);
 });
 
-test("encode/decode round-trips share string", () => {
+test("fromBeatData deep-copies (no shared refs)", () => {
   const d = S.toBeatData(sampleBank, sampleSettings);
-  const str = S.encodeShare(d);
-  assert.strictEqual(typeof str, "string");
-  assert.deepStrictEqual(S.decodeShare(str), d);
-});
-
-test("decodeShare returns null on garbage", () => {
-  assert.strictEqual(S.decodeShare("!!!not-base64!!!"), null);
+  const { tracks } = S.fromBeatData(d);
+  tracks.kick.steps[0] = false;
+  assert.strictEqual(d.tracks.kick.steps[0], true);
 });

@@ -1,4 +1,4 @@
-/* serialize.js — pure pattern/share helpers. UMD: browser + Node. */
+/* serialize.js — pure pattern (de)serialization helpers. UMD: browser + Node. */
 (function (root, factory) {
   const api = factory();
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -25,27 +25,5 @@
     };
   }
 
-  // base64 of JSON, URL-safe. Browser uses btoa/atob; Node uses Buffer.
-  function b64encode(s) {
-    if (typeof btoa === "function") return btoa(unescape(encodeURIComponent(s)));
-    return Buffer.from(s, "utf8").toString("base64");
-  }
-  function b64decode(s) {
-    if (typeof atob === "function") return decodeURIComponent(escape(atob(s)));
-    return Buffer.from(s, "base64").toString("utf8");
-  }
-
-  function encodeShare(data) {
-    return b64encode(JSON.stringify(data)).replace(/\+/g, "-").replace(/\//g, "_");
-  }
-  function decodeShare(str) {
-    try {
-      const b = str.replace(/-/g, "+").replace(/_/g, "/");
-      const obj = JSON.parse(b64decode(b));
-      if (!obj || typeof obj !== "object" || !obj.tracks) return null;
-      return obj;
-    } catch { return null; }
-  }
-
-  return { toBeatData, fromBeatData, encodeShare, decodeShare };
+  return { toBeatData, fromBeatData };
 });
