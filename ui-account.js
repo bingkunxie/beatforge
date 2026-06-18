@@ -177,7 +177,7 @@
       const card = document.createElement("div");
       card.className = "beat-card";
       card.innerHTML = `<div class="t">${escapeHtml(b.title)}</div>
-        <div class="meta">♥ <span class="cnt">${b.like_count}</span></div>
+        <div class="meta">♥ <span class="cnt">${Number(b.like_count) || 0}</span></div>
         <div class="acts">
           <button class="btn" data-a="load">Load</button>
           <button class="btn ghost like ${isLiked ? "on" : ""}" data-a="like">♥ ${isLiked ? "Liked" : "Like"}</button>
@@ -192,6 +192,8 @@
       let on = isLiked;
       likeBtn.onclick = async () => {
         if (!(await requireAuth())) return;
+        if (likeBtn.disabled) return;      // guard against double-click races
+        likeBtn.disabled = true;
         try {
           if (on) { await window.BF.beats.unlike(b.id); cnt.textContent = +cnt.textContent - 1; }
           else { await window.BF.beats.like(b.id); cnt.textContent = +cnt.textContent + 1; }
@@ -199,6 +201,7 @@
           likeBtn.classList.toggle("on", on);
           likeBtn.textContent = on ? "♥ Liked" : "♥ Like";
         } catch (e) { alert(e.message); }
+        finally { likeBtn.disabled = false; }
       };
       list.appendChild(card);
     });
