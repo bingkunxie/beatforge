@@ -8,8 +8,9 @@
   function renderBar(user) {
     if (!auth.enabled) { bar.innerHTML = `<span class="who">offline mode</span>`; return; }
     if (user) {
-      bar.innerHTML = `<span class="who">● ${user.email || "signed in"}</span>
+      bar.innerHTML = `<span class="who">● </span>
         <button class="btn ghost" id="btnSignOut">Sign out</button>`;
+      bar.querySelector(".who").append(user.email || "signed in"); // textContent-safe
       document.getElementById("btnSignOut").onclick = () => auth.signOut();
     } else {
       bar.innerHTML = `<button class="btn ghost" id="btnSignIn">Sign in</button>`;
@@ -51,8 +52,12 @@
   }
 
   // init
-  if (auth.enabled) auth.onChange(renderBar);
-  auth.currentUser().then(renderBar);
+  if (auth.enabled) {
+    auth.onChange(renderBar);
+    auth.currentUser().then(renderBar);
+  } else {
+    renderBar(null);
+  }
 
   window.BF.ui = { renderBar, openAuthModal };
 })();

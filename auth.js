@@ -13,6 +13,7 @@
   }
 
   function emit(user) { listeners.forEach((fn) => fn(user)); }
+  const notConfigured = { error: { message: "Auth not configured." } };
 
   const auth = {
     enabled,
@@ -24,18 +25,24 @@
       return data.user || null;
     },
     async signUpEmail(email, password) {
+      if (!client) return notConfigured;
       return client.auth.signUp({ email, password });
     },
     async signInEmail(email, password) {
+      if (!client) return notConfigured;
       return client.auth.signInWithPassword({ email, password });
     },
     async signInGoogle() {
+      if (!client) return notConfigured;
       return client.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo: window.location.origin + window.location.pathname },
       });
     },
-    async signOut() { return client.auth.signOut(); },
+    async signOut() {
+      if (!client) return notConfigured;
+      return client.auth.signOut();
+    },
   };
 
   window.BF.auth = auth;
