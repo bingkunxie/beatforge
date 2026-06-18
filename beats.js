@@ -16,6 +16,7 @@
       if (error) throw error;
       return out;
     },
+    // patch keys must be DB column names (snake_case), e.g. { is_public: true }.
     async update(id, patch) {
       const { data, error } = await c().from("beats").update(patch).eq("id", id).select().single();
       if (error) throw error;
