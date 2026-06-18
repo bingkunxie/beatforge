@@ -152,6 +152,99 @@
   document.getElementById("cloudSave").onclick = async () => { if (await requireAuth()) openSaveDialog(); };
   document.getElementById("myBeats").onclick = openMyBeats;
 
+  let gallerySort = "new";
+
+  async function openGallery() {
+    if (!auth.enabled) { alert("Set up Supabase (see SETUP.md) to use the gallery."); return; }
+    panel.classList.remove("hidden");
+    panel.innerHTML = `<h2>GALLERY <button class="close">✕</button></h2>
+      <div class="tabs">
+        <button class="btn" data-s="new">Newest</button>
+        <button class="btn" data-s="popular">Popular</button>
+      </div><div id="glist">Loading…</div>`;
+    panel.querySelector(".close").onclick = closePanel;
+    panel.querySelectorAll(".tabs .btn").forEach((b) => {
+      b.classList.toggle("active", b.dataset.s === gallerySort);
+      b.onclick = () => { gallerySort = b.dataset.s; openGallery(); };
+    });
+    const rows = await window.BF.beats.gallery({ sort: gallerySort });
+    const liked = await window.BF.beats.likedByMe(rows.map((r) => r.id));
+    const list = panel.querySelector("#glist");
+    if (!rows.length) { list.textContent = "No public beats yet — be the first!"; return; }
+    list.innerHTML = "";
+    rows.forEach((b) => {
+      const isLiked = liked.has(b.id);
+      const card = document.createElement("div");
+      card.className = "beat-card";
+      card.innerHTML = `<div class="t">${escapeHtml(b.title)}</div>
+        <div class="meta">♥ <span class="cnt">${b.like_count}</span></div>
+        <div class="acts">
+          <button class="btn" data-a="load">Load</button>
+          <button class="btn ghost like ${isLiked ? "on" : ""}" data-a="like">♥ ${isLiked ? "Liked" : "Like"}</button>
+          <button class="btn ghost" data-a="remix">Remix</button>
+          <button class="btn ghost" data-a="share">Copy link</button>
+        </div>`;
+      card.querySelector('[data-a="load"]').onclick = () => { loadBeatIntoGrid(b); closePanel(); };
+      card.querySelector('[data-a="share"]').onclick = () => copyShare(b.id);
+      card.querySelector('[data-a="remix"]').onclick = () => startRemix(b);
+      const likeBtn = card.querySelector('[data-a="like"]');
+      const cnt = card.querySelector(".cnt");
+      let on = isLiked;
+      likeBtn.onclick = async () => {
+        if (!(await requireAuth())) return;
+        try {
+          if (on) { await window.BF.beats.unlike(b.id); cnt.textContent = +cnt.textContent - 1; }
+          else { await window.BF.beats.like(b.id); cnt.textContent = +cnt.textContent + 1; }
+          on = !on;
+          likeBtn.classList.toggle("on", on);
+          likeBtn.textContent = on ? "♥ Liked" : "♥ Like";
+        } catch (e) { alert(e.message); }
+      };
+      list.appendChild(card);
+    });
+  }
+
+  // Remix: load into grid, then a save dialog creates a new beat crediting origin.
+  function startRemix(beat) {
+    loadBeatIntoGrid(beat);
+    closePanel();
+    openSaveDialogForRemix(beat);
+  }
+  function openSaveDialogForRemix(orig) {
+    const bg = document.createElement("div");
+    bg.className = "auth-modal-bg";
+    bg.innerHTML = `
+      <div class="auth-modal">
+        <strong>Remix of "${escapeHtml(orig.title)}"</strong>
+        <input id="btitle" value="${escapeHtml(orig.title)} (remix)" />
+        <label style="font-size:12px;color:var(--muted)">
+          <input type="checkbox" id="bpublic" checked /> Make public
+        </label>
+        <div class="err" id="saveerr"></div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn" id="dosave" style="flex:1">Save remix</button>
+          <button class="btn ghost" id="cancelsave" style="flex:1">Just load it</button>
+        </div>
+      </div>`;
+    document.body.appendChild(bg);
+    const close = () => bg.remove();
+    bg.querySelector("#cancelsave").onclick = close;
+    bg.onclick = (e) => { if (e.target === bg) close(); };
+    bg.querySelector("#dosave").onclick = async () => {
+      if (!(await requireAuth())) return;
+      const title = bg.querySelector("#btitle").value.trim() || "Untitled remix";
+      const isPublic = bg.querySelector("#bpublic").checked;
+      const data = window.BF.serialize.toBeatData(
+        window.BF.engine.getActiveBank(), window.BF.engine.getSettings());
+      try {
+        await window.BF.beats.save({ title, data, isPublic, remixOf: orig.id });
+        close();
+      } catch (e) { bg.querySelector("#saveerr").textContent = e.message; }
+    };
+  }
+
+  document.getElementById("galleryBtn").onclick = openGallery;
+
   // init
   if (auth.enabled) {
     auth.onChange(renderBar);
@@ -168,5 +261,5 @@
   }
   loadFromUrl();
 
-  window.BF.ui = { renderBar, openAuthModal, openMyBeats, loadBeatIntoGrid, closePanel, copyShare, escapeHtml };
+  window.BF.ui = { renderBar, openAuthModal, openMyBeats, openGallery, loadBeatIntoGrid, closePanel, copyShare, escapeHtml };
 })();
