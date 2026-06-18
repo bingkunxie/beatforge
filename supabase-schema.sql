@@ -39,7 +39,12 @@ create trigger on_auth_user_created
   after insert on auth.users for each row execute function handle_new_user();
 
 -- View exposing like counts for sorting.
-create or replace view beats_with_likes as
+-- security_invoker = true makes the view evaluate under the QUERYING user's RLS
+-- (Postgres 15+/Supabase), so the beats RLS policy still hides private beats.
+-- Without it, views run as owner and would leak private beats to anyone.
+create or replace view beats_with_likes
+  with (security_invoker = true)
+as
   select b.*, coalesce(l.cnt, 0) as like_count
   from beats b
   left join (select beat_id, count(*) cnt from likes group by beat_id) l

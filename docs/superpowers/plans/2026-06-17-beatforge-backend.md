@@ -285,7 +285,11 @@ create trigger on_auth_user_created
   after insert on auth.users for each row execute function handle_new_user();
 
 -- View exposing like counts for sorting.
-create or replace view beats_with_likes as
+-- security_invoker = true: the view respects the querying user's RLS so private
+-- beats stay hidden (without it, views run as owner and bypass RLS).
+create or replace view beats_with_likes
+  with (security_invoker = true)
+as
   select b.*, coalesce(l.cnt, 0) as like_count
   from beats b
   left join (select beat_id, count(*) cnt from likes group by beat_id) l
