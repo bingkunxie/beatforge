@@ -160,5 +160,13 @@
     renderBar(null);
   }
 
+  async function loadFromUrl() {
+    const id = new URLSearchParams(location.search).get("beat");
+    if (!id || !auth.enabled) return;
+    const beat = await window.BF.beats.byId(id);
+    if (beat) loadBeatIntoGrid(beat);
+  }
+  loadFromUrl();
+
   window.BF.ui = { renderBar, openAuthModal, openMyBeats, loadBeatIntoGrid, closePanel, copyShare, escapeHtml };
 })();
