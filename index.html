@@ -9,6 +9,7 @@
 <body>
   <div class="app">
     <header class="topbar">
+      <div id="authBar" class="authbar"></div>
       <div class="brand">
         <span class="logo">◆</span>
         <h1>BEATFORGE</h1>
@@ -52,8 +53,11 @@
       <div class="group buttons">
         <button id="clear" class="btn ghost">Clear</button>
         <button id="random" class="btn ghost">Randomize</button>
-        <button id="save" class="btn ghost">Save</button>
-        <button id="load" class="btn ghost">Load</button>
+        <button id="exportKit" class="btn ghost" title="Download this kit as a .json file">↓ Export</button>
+        <button id="importKit" class="btn ghost" title="Load a kit from a .json file">↑ Import</button>
+        <button id="cloudSave" class="btn ghost">Cloud Save</button>
+        <button id="myBeats" class="btn ghost">My Beats</button>
+        <button id="galleryBtn" class="btn ghost">Gallery</button>
       </div>
       <div class="group kit">
         <label>KIT</label>
@@ -65,7 +69,14 @@
       </div>
       <div class="credit">space to play · 1–4 to switch patterns · click cells to toggle</div>
     </footer>
+    <div id="panel" class="panel hidden"></div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="serialize.js"></script>
   <script src="app.js"></script>
+  <script src="auth.js"></script>
+  <script src="beats.js"></script>
+  <script src="ui-account.js"></script>
 </body>
 </html>

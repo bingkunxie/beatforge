@@ -22,3 +22,20 @@ Every sound is synthesized live with the Web Audio API (oscillators + filtered n
 ## Run
 
 Just open `index.html` in any modern browser. (Or serve the folder, e.g. `python3 -m http.server`.)
+
+## Accounts, sharing & gallery (optional backend)
+
+Beatforge can optionally connect to a [Supabase](https://supabase.com) backend so users can:
+
+- **Sign in** with Google or email/password
+- **Save** beats to a personal library (My Beats)
+- **Share** any beat via a `?beat=<id>` link
+- **Browse a public gallery** — play, like, and remix community beats
+
+This is entirely optional: with no backend configured, the app shows "offline mode"
+and the sequencer works exactly as before. The credentials in `config.js` are safe
+to expose publicly — data is protected by Postgres Row Level Security.
+
+See [SETUP.md](SETUP.md) to wire up your own Supabase project, and
+[docs/superpowers/specs](docs/superpowers/specs) / [docs/superpowers/plans](docs/superpowers/plans)
+for the design and implementation plan.
