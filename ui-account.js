@@ -131,9 +131,22 @@
   }
 
   function escapeHtml(s) { return s.replace(/[&<>"]/g, (ch) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[ch])); }
+
+  let toastTimer = null;
+  function toast(msg) {
+    let t = document.getElementById("bfToast");
+    if (!t) { t = document.createElement("div"); t.id = "bfToast"; t.className = "toast"; document.body.appendChild(t); }
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+  }
+
   function copyShare(id) {
     const url = location.origin + location.pathname + "?beat=" + id;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url)
+      .then(() => toast("Link copied to clipboard"))
+      .catch(() => window.prompt("Copy this share link:", url));
   }
 
   document.getElementById("cloudSave").onclick = async () => { if (await requireAuth()) openSaveDialog(); };
