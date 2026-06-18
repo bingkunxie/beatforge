@@ -263,3 +263,11 @@ select {
   .credit, .tag { display: none; }
   .topbar { gap: 14px; }
 }
+
+.authbar { display:flex; align-items:center; gap:8px; width:100%; order:-1; justify-content:flex-end; font-size:12px; }
+.authbar .who { color: var(--accent2); }
+.auth-modal-bg { position:fixed; inset:0; background:#000a; display:grid; place-items:center; z-index:50; }
+.auth-modal { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:22px; width:300px; display:flex; flex-direction:column; gap:10px; }
+.auth-modal input { background:var(--bg); border:1px solid var(--line); color:var(--txt); border-radius:8px; padding:9px; font-family:inherit; }
+.auth-modal .err { color:var(--accent); font-size:11px; min-height:14px; }
+.auth-modal .google { background:#fff; color:#222; border:none; border-radius:8px; padding:9px; cursor:pointer; font-family:inherit; font-weight:600; }
